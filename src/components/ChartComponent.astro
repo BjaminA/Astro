@@ -1,0 +1,57 @@
+---
+import { onMount } from 'astro/client'; // Ensure onMount is imported from 'astro/client'
+---
+
+<style>
+  .chart-container {
+    max-width: 600px;
+    margin: auto;
+  }
+</style>
+
+<div class="chart-container">
+  <canvas id="myChart" width="400" height="200"></canvas>
+</div>
+
+<script>
+  onMount(async () => {
+    console.log('onMount triggered!');  // First debug log
+
+    try {
+      // Import Chart.js dynamically
+      const { Chart } = await import('chart.js/auto');
+      console.log('Chart.js loaded successfully:', Chart); // Debug log for successful module load
+      
+      // Import chartjs-adapter-date-fns dynamically
+      await import('chartjs-adapter-date-fns');
+      console.log('chartjs-adapter-date-fns loaded successfully'); // Debug log for date adapter
+      
+      // Get the canvas context
+      const ctx = document.getElementById('myChart').getContext('2d');
+      console.log('Canvas context:', ctx);
+
+      // Initialize Chart.js with basic configuration (for demo purposes)
+      const myChart = new Chart(ctx, {
+        type: 'line', // Example: 'line' chart
+        data: {
+          labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+          datasets: [{
+            label: 'Demo Data',
+            data: [65, 59, 80, 81, 56, 55],
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            x: { type: 'time', time: { unit: 'month' } },
+            y: { beginAtZero: true }
+          }
+        }
+      });
+      
+    } catch (error) {
+      console.error('Error loading modules:', error); // Log any errors if the import fails
+    }
+  });
+</script>
